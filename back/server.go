@@ -36,6 +36,8 @@ func main() {
 	r.GET("/", homeHandler.Home)
 	r.POST("/upload", homeHandler.Upload)
 	r.GET("/stream", homeHandler.Stream)
+	r.GET("/rtsp", homeHandler.Rtsp)
+	r.GET("/image", homeHandler.Image)
 	r.GET("/ws", handlers.WS)
 	//Запускаем сервер на потру 8080
 	r.Run(":8080")

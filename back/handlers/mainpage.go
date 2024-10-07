@@ -93,6 +93,10 @@ func (h Handler) Stream(c *gin.Context) {
 	encodedKEY := url.QueryEscape(rawKey)
 	proxyURL := h.settings.Model.Endpoint + "/video_feed?url=" + encodedURL + "&key=" + encodedKEY
 
+	proxyGet(c, proxyURL, "multipart/x-mixed-replace; boundary=frame")
+}
+
+func proxyGet(c *gin.Context, proxyURL string, contentType string) {
 	// Выполняем GET-запрос
 	resp, err := http.Get(proxyURL)
 	if err != nil {
@@ -110,7 +114,7 @@ func (h Handler) Stream(c *gin.Context) {
 	}
 
 	// Устанавливаем заголовок Content-Type для ответов с видео-потоком
-	c.Header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
+	c.Header("Content-Type", contentType)
 
 	// Копируем тело ответа от сервиса клиенту
 	_, err = io.Copy(c.Writer, resp.Body)
@@ -119,4 +123,37 @@ func (h Handler) Stream(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to stream video"})
 		return
 	}
+}
+
+func (h Handler) Image(c *gin.Context) {
+	rawURL := c.Query("url")
+	if rawURL == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "url parameter is required"})
+		return
+	}
+
+	// Кодируем URL
+	encodedURL := url.QueryEscape(rawURL)
+	proxyURL := h.settings.Model.Endpoint + "/image?url=" + encodedURL
+
+	proxyGet(c, proxyURL, "image/jpeg")
+}
+
+func (h Handler) Rtsp(c *gin.Context) {
+	rawURL := c.Query("url")
+	if rawURL == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "url parameter is required"})
+		return
+	}
+	rawKey := c.Query("key")
+	if rawURL == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "key parameter is required"})
+		return
+	}
+
+	// Кодируем URL
+	encodedURL := url.QueryEscape(rawURL)
+	encodedKEY := url.QueryEscape(rawKey)
+	proxyURL := h.settings.Model.Endpoint + "/rtsp_feed?url=" + encodedURL + "&key=" + encodedKEY
+	proxyGet(c, proxyURL, "multipart/x-mixed-replace; boundary=frame")
 }

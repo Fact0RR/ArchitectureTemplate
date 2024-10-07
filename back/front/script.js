@@ -158,8 +158,18 @@ async function uploadFile() {
         return response.json();
     })
     .then(data => {
-        outputImage.src = '/stream?url='+file.name+'&key='+GlobalKey; // Замените на адрес вашего изображения
-        outputImage.style.display = 'block'; // Показываем изображение
+        // Проверяем тип файла
+        const type = file.type;
+        if (type.startsWith('video/')) {
+            outputImage.src = '/stream?url='+file.name+'&key='+GlobalKey; // Замените на адрес вашего изображения
+            outputImage.style.display = 'block'; // Показываем изображение
+        } else if (type.startsWith('image/')) {
+            outputImage.src = '/image?url='+file.name;
+            outputImage.style.display = 'block'; // Показываем изображение
+        } else {
+            alert('Выбранный файл не является видео или изображением.');
+            return
+        }
 
         outputImage.onload = function() { // Ждём загрузку изображения
             outputImage.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -171,3 +181,23 @@ async function uploadFile() {
         alert('Произошла ошибка при загрузке.');
     });
 }
+
+document.getElementById('rtspButton').addEventListener('click', async () => {
+    const urlRTSP = document.getElementById('urlRTSP').value;
+    const outputImage = document.getElementById('outputImage');
+
+    // Проверка на пустое текстовое поле
+    if (!urlRTSP) {
+        alert('Пожалуйста, введите RTSP URL.');
+        return; // Прерываем выполнение функции, если поле пустое
+    }
+
+    // Формируем URL с параметрами
+    const endpoint = `/rtsp?key=${encodeURIComponent(GlobalKey)}`+`&url=${encodeURIComponent(urlRTSP)}`;
+    console.log(endpoint)
+    outputImage.src = endpoint
+    outputImage.style.display = 'block'; // Показываем изображение
+    outputImage.onload = function() { // Ждём загрузку изображения
+        outputImage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+});

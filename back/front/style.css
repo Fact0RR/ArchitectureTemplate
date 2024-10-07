@@ -70,3 +70,33 @@ button:hover {
     vertical-align: middle; /* центрирование текста по вертикали */
     padding: 8px; /* добавление отступов для ячеек */
 }
+
+.container {
+    display: flex;
+    align-items: center;
+}
+
+/* Стили для поля ввода */
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1; /* Заставим поле ввода занимать оставшееся пространство */
+}
+
+/* Стили для кнопки */
+.purple-button {
+    background-color: #8e44ad; /* Фиолетовый цвет */
+    color: white; /* Цвет текста */
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px; /* Отступ слева от поля ввода */
+}
+
+.purple-button:hover {
+    background-color: #732d91; /* Более темный фиолетовый при наведении */
+}
