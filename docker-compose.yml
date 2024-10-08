@@ -39,6 +39,8 @@ services:
       - '5000:5000'
     depends_on:
       - minio # Зависимость от Minio для наличия доступа к нему
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   server:
     build:
